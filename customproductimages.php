@@ -15,7 +15,6 @@ class CustomProductImages extends AbstractModule
         'displayHeader',
         'displayFooterProduct',
         'displayAdminProductsExtra',
-        'actionObjectProductUpdateAfter',
         'actionAdminControllerSetMedia'
     ];
 
@@ -54,23 +53,17 @@ class CustomProductImages extends AbstractModule
     public function hookDisplayAdminProductsExtra($params) {
         $id_product = (int) $params['id_product'];
 
+        $productCustomImages = CustomProductImage::queryObjects(['id_product' => $id_product], $this->context->shop->id);
+
+        $productCustomImageLinks = [];
+        foreach($productCustomImages as $productCustomImage)
+        {
+            $productCustomImageLinks[] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$productCustomImage->name);
+        }
+        
+        $this->context->smarty->assign('productCustomImageLinks', $productCustomImageLinks);
+
         return $this->display(__FILE__, 'views/templates/hook/displayAdminProductsExtra.tpl');
-    }
-
-    public function hookActionObjectProductUpdateAfter($params)
-    {
-        $product = $params['object'] ?? null;
-        if(!$product || !Validate::isLoadedObject($product))
-            return;
-
-        if (isset($_FILES['custom_product_image']))
-        {
-            $this->saveCustomImage($product->id);
-        }
-        elseif(Tools::isSubmit('submitDeleteCustomImage'))
-        {
-            
-        }
     }
 
 
@@ -88,7 +81,7 @@ class CustomProductImages extends AbstractModule
 
             $imagesize = @getimagesize($_FILES['custom_product_image']['tmp_name']);
             if(empty($imagesize)) {
-                return ['error' => 'Failed to get image size.'];
+                return ['error' => $this->l('Failed to get image size.')];
             }
 
             if(!in_array(
@@ -99,7 +92,7 @@ class CustomProductImages extends AbstractModule
                     'png'
                 ]
             )) {
-                return ['error' => 'Bad file mime type: ' . $imagesize['mime']];
+                return ['error' => $this->l('Bad file mime type: ') . $imagesize['mime']];
             }
 
             $temp_name = tempnam(_PS_TMP_IMG_DIR_, 'PS');
@@ -108,9 +101,9 @@ class CustomProductImages extends AbstractModule
             if ($error = ImageManager::validateUpload($_FILES['custom_product_image'])) {
                 return ['error' => $error];
             } elseif (!$temp_name || !move_uploaded_file($_FILES['custom_product_image']['tmp_name'], $temp_name)) {
-                return ['error' => 'Failed to move file to temporary location ' . $temp_name . '. Check your permissions.'];
+                return ['error' => $this->l('Failed to move file to temporary location ') . $temp_name . $this->l('. Check your permissions.')];
             } elseif (!ImageManager::resize($temp_name, __DIR__.'/images/'.$salt.'_'.$_FILES['custom_product_image']['name'], null, null, $type)) {
-                return ['error' => $this->getTranslator()->trans('An error occurred during the image upload process.', array(), 'Admin.Notifications.Error')];
+                return ['error' => $this->l('An error occurred during the image upload process.')];
             }
 
             if (isset($temp_name)) {
@@ -122,9 +115,11 @@ class CustomProductImages extends AbstractModule
             $customProductImage->name = $salt.'_'.$_FILES['custom_product_image']['name'];
             $customProductImage->id_product = $id_product;
             $customProductImage->save();
+
+            return ['success' => $this->l('Image successfully assigned to the product.')];
         }
         else {
-            return ['error' => 'An error occured while uploading a file.'];
+            return ['error' => $this->l('An error occured while uploading a file.')];
         }
     }
 

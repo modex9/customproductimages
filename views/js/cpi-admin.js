@@ -2,9 +2,14 @@ $(function () {
     $('#add-custom-image').click(function () {
         const idProduct = $('#form_id_product').val();
         const data = new FormData();
+        const buttonSave = $('#add-custom-image');
 
         if ($('#custom_product_image')[0].files[0]) {
             data.append('custom_product_image', $('#custom_product_image')[0].files[0]);
+        }
+        else {
+            showErrorMessage("No file selected.");
+            return;
         }
         $.ajax({
             type: 'POST',
@@ -13,35 +18,28 @@ $(function () {
             contentType: false,
             processData: false,
             beforeSend() {
-                $('ul.text-danger').remove();
-                $('*.has-danger').removeClass('has-danger');
+                buttonSave.attr('disabled', 'disbaled')
             },
             success(response) {
-                // inject new attachment in attachment list
-                // if (response.id) {
-                //   /* eslint-disable */
-                //   const row = `<tr>\
-                //     <td class="col-md-3"><input type="checkbox" name="form[step6][attachments][]" value="${response.id}" checked="checked"> ${response.real_name}</td>\
-                //     <td class="col-md-6">${response.file_name}</td>\
-                //     <td class="col-md-2">${response.mime}</td>\
-                //   </tr>`;
-                //   /* eslint-enable */
-
-                //   $('#product-attachment-file tbody').append(row);
-                //   $('.js-options-no-attachments').addClass('hide');
-                //   $('.js-options-with-attachments').removeClass('hide');
-                // }
+                if(typeof(response.success) !== 'undefined')
+                {
+                    showSuccessMessage(response.success);
+                }
+                else if(typeof(response.error) !== 'undefined')
+                {
+                    showErrorMessage(response.error);
+                }
+                else
+                {
+                    showErrorMessage('Unexpected response received.');
+                }
             },
             error(response) {
                 $.each(jQuery.parseJSON(response.responseText), (key, errors) => {
                     let html = '<ul class="list-unstyled text-danger">';
                     $.each(errors, (errorsKey, error) => {
-                        html += `<li>${error}</li>`;
+                        showErrorMessage(error);
                     });
-                    html += '</ul>';
-
-                    $(`#form_step6_attachment_product_${key}`).parent().append(html);
-                    $(`#form_step6_attachment_product_${key}`).parent().addClass('has-danger');
                 });
             },
             complete() {

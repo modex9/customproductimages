@@ -1,6 +1,6 @@
 <?php
 
-class CustomProductImage extends ObjectModel
+class CustomProductImage extends ObjectModelExt
 {
     public $id;
 
@@ -16,7 +16,7 @@ class CustomProductImage extends ObjectModel
         'primary' => 'id_image',
         'fields' => [
             'id_product'    => ['type' => self::TYPE_INT, 'required' => true, 'size' => 10],
-            'name'          => ['type' => self::TYPE_STRING, 'size' => 100],
+            'name'          => ['type' => self::TYPE_STRING, 'size' => 255],
         ],
     ];
 }

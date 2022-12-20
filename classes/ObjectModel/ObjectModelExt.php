@@ -36,7 +36,7 @@ abstract class ObjectModelExt extends ObjectModel
     /*
         1 condition = [column => value]
     */
-    public static function getObjectIds($conditions)
+    public static function getObjectIds($conditions, $id_shop = null)
     {
         $columns = array_keys($conditions);
         foreach($columns as $column)
@@ -47,9 +47,15 @@ abstract class ObjectModelExt extends ObjectModel
 
         $query = (new DbQuery())
             ->select(static::$definition['primary'])
-            ->from(static::$definition['table']);
+            ->from(static::$definition['table'], 'a');
 
         $where = self::FICTIVE_AND_CONDITION;
+        if($id_shop)
+        {
+            $query->join('INNER JOIN '._DB_PREFIX_. static::$definition['table'] . '_shop s USING(' . static::$definition['primary'] . ')');
+            $where .= " AND s.`id_shop` = {$id_shop}";
+        }
+
         foreach($conditions as $column => $value)
         {
             if(self::columnValueNeedsQuotes($column))
@@ -64,8 +70,20 @@ abstract class ObjectModelExt extends ObjectModel
         $query->where($where);
 
         return array_map(function($object) {
-            return ($object[static::$definition['primary']] ?? 0);
+            return ($object[static::$definition['primary']]);
         }, Db::getInstance()->executeS($query));
+    }
+
+    public static function queryObjects($conditions, $shopJoin = false)
+    {
+        $objects = [];
+        $object_ids = self::getObjectIds($conditions, $shopJoin);
+        foreach($object_ids as $id)
+        {
+            $objects[] = new static($id);
+        }
+
+        return $objects;
     }
 
     private function columnValueNeedsQuotes($column)

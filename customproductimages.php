@@ -53,15 +53,15 @@ class CustomProductImages extends AbstractModule
     public function hookDisplayAdminProductsExtra($params) {
         $id_product = (int) $params['id_product'];
 
-        $productCustomImages = CustomProductImage::queryObjects(['id_product' => $id_product], $this->context->shop->id);
+        $customProductImages = CustomProductImage::queryObjects(['id_product' => $id_product], $this->context->shop->id);
 
-        $productCustomImageLinks = [];
-        foreach($productCustomImages as $productCustomImage)
+        $customProductImageLinks = [];
+        foreach($customProductImages as $customProductImage)
         {
-            $productCustomImageLinks[] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$productCustomImage->name);
+            $customProductImageLinks[] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name);
         }
         
-        $this->context->smarty->assign('productCustomImageLinks', $productCustomImageLinks);
+        $this->context->smarty->assign('customProductImageLinks', $customProductImageLinks);
 
         return $this->display(__FILE__, 'views/templates/hook/displayAdminProductsExtra.tpl');
     }
@@ -116,7 +116,10 @@ class CustomProductImages extends AbstractModule
             $customProductImage->id_product = $id_product;
             $customProductImage->save();
 
-            return ['success' => $this->l('Image successfully assigned to the product.')];
+            return [
+                'success' => $this->l('Image successfully assigned to the product.'),
+                'imageLink' => $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name),
+            ];
         }
         else {
             return ['error' => $this->l('An error occured while uploading a file.')];

@@ -24,6 +24,7 @@ $(function () {
                 if(typeof(response.success) !== 'undefined')
                 {
                     showSuccessMessage(response.success);
+                    appendNewImage(response.imageLink);
                 }
                 else if(typeof(response.error) !== 'undefined')
                 {
@@ -50,5 +51,15 @@ $(function () {
 
     function replaceEndingIdFromUrl(url, newId) {
         return url.replace(/\/\d+(?!.*\/\d+)((?=\?.*))?/, `/${newId}`);
+    }
+
+    function appendNewImage(imageLink) {
+        $('#product-custom-images').append(`
+            <div class="col-md-4">
+                <div class="thumbnail">
+                    <img class="w-100" src="${imageLink}">
+                </div>
+            </div>
+        `);
     }
 });

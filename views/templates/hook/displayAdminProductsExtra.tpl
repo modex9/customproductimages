@@ -1,10 +1,10 @@
-<div class="row">
-    {foreach $productCustomImageLinks as $imageLink}
+<div id="product-custom-images" class="row">
+    {foreach $customProductImageLinks as $imageLink}
         <div class="col-md-4">
             <div class="thumbnail">
-            <img class="w-100" src="{$imageLink}">
+                <img class="w-100" src="{$imageLink}">
+            </div>
         </div>
-     </div>
    {/foreach}
 </div>
 <div class="row">

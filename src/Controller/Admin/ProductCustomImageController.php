@@ -6,6 +6,7 @@ use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
+use CustomProductImage;
 
 /**
  * Admin controller for product attachments (in /product/form page).
@@ -32,5 +33,22 @@ class ProductCustomImageController extends FrameworkBundleAdminController
         $jsonData = $module->getInstance()->saveCustomImage($idProduct);
 
         return new JsonResponse($jsonData);
+    }
+
+    /**
+     * Manage form add product attachment.
+     *
+     * @AdminSecurity("is_granted(['delete'], 'ADMINPRODUCTS_')")
+     *
+     * @param int $idCustomImage
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function deleteAction($idCustomImage, Request $request)
+    {
+        $moduleRepository = $this->get('prestashop.core.admin.module.repository');
+        $module = $moduleRepository->getModule('customproductimages');
+        return new JsonResponse($module->getInstance()->deleteCustomImage($idCustomImage));
     }
 }

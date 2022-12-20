@@ -3,3 +3,8 @@ add_product_custom_image:
   methods: [POST]
   defaults:
     _controller: 'CustomProductImages\Controller\Admin\ProductCustomImageController::addAction'
+delete_product_custom_image_url:
+  path: /custom-product-images/delete/{idCustomImage}
+  methods: [POST]
+  defaults:
+    _controller: 'CustomProductImages\Controller\Admin\ProductCustomImageController::deleteAction'

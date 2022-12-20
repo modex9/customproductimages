@@ -58,7 +58,7 @@ class CustomProductImages extends AbstractModule
         $customProductImageLinks = [];
         foreach($customProductImages as $customProductImage)
         {
-            $customProductImageLinks[] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name);
+            $customProductImageLinks[$customProductImage->id] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name);
         }
         
         $this->context->smarty->assign('customProductImageLinks', $customProductImageLinks);
@@ -119,11 +119,20 @@ class CustomProductImages extends AbstractModule
             return [
                 'success' => $this->l('Image successfully assigned to the product.'),
                 'imageLink' => $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name),
+                'id' => $customProductImage->id,
             ];
         }
         else {
             return ['error' => $this->l('An error occured while uploading a file.')];
         }
+    }
+
+    public function deleteCustomImage($id_image)
+    {
+        $customProductImage = new CustomProductImage($id_image);
+        if(!$customProductImage->delete())
+            return ['error' => $this->l('Failed to delete an image.')];
+        return ['success' => $this->l('Image deleted successfully.')];
     }
 
 
@@ -136,6 +145,7 @@ class CustomProductImages extends AbstractModule
 
                 Media::addJsDef([
                     'add_product_custom_image_url' => $router->generate('add_product_custom_image', ['idProduct' => 1]),
+                    'delete_product_custom_image_url' => $router->generate('delete_product_custom_image_url', ['idCustomImage' => 1]),
                 ]
                 );
                 $this->context->controller->addJS($this->_path . 'views/js/cpi-admin.js');

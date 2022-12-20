@@ -1,0 +1,5 @@
+add_product_custom_image:
+  path: /custom-product-images/add/{idProduct}
+  methods: [POST]
+  defaults:
+    _controller: 'CustomProductImages\Controller\Admin\ProductCustomImageController::addAction'

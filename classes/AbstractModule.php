@@ -41,7 +41,14 @@ class AbstractModule extends Module
      */
     public function install()
     {
-        if (!parent::install()) {
+        if (!$this->createDbTables()) {
+            $this->_errors[] = $this->l('Failed to create tables.');
+            return false;
+        }
+
+        if(!parent::install())
+        {
+            $this->_errors[] = $this->l('Failed to install the module.');
             return false;
         }
 
@@ -52,12 +59,12 @@ class AbstractModule extends Module
             }
         }
 
-        if (!$this->createDbTables()) {
-            $this->_errors[] = $this->l('Failed to create tables.');
+        if(!$this->registerTabs())
+        {
+            $this->_errors[] = $this->l('Failed to install tabs for the module.');
             return false;
         }
-
-        return $this->registerTabs();
+        return true;
     }
 
     /**
@@ -121,14 +128,11 @@ class AbstractModule extends Module
     {
         $db = new DbManager($this->tables);
 
-        $db->deleteTables();
-        $this->deleteTabs();
+        $res = true;
+        $res &= $db->deleteTables();
+        $res &= $this->deleteTabs();
 
-        if (!parent::uninstall()) {
-            return false;
-        }
-
-        return true;
+        return $res && parent::uninstall();
     }
 
     /**
@@ -136,12 +140,8 @@ class AbstractModule extends Module
      */
     public function createDbTables()
     {
-        try {
-            $db = new DbManager($this->tables);
-            $result = $db->createTables();
-        } catch (Exception $e) {
-            $result = false;
-        }
+        $db = new DbManager($this->tables);
+        $result = $db->createTables();
         return $result;
     }
 }

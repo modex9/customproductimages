@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_custom_product_image` (
     `id_product` int(10) NOT NULL,
     `name` varchar(100) NOT NULL,
     PRIMARY KEY (`id_image`),
-    KEY `id_product` (`product`)
+    KEY `product` (`id_product`)
     ) ENGINE=_MYSQL_ENGINE_ DEFAULT CHARSET=utf8;

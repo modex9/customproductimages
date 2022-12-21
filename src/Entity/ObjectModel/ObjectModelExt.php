@@ -1,5 +1,9 @@
 <?php
 
+namespace CustomProductImages\Entity\ObjectModel;
+
+use ObjectModel, Db, DbQuery;
+
 abstract class ObjectModelExt extends ObjectModel
 {
     const FICTIVE_AND_CONDITION = '1 ';

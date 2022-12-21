@@ -6,7 +6,6 @@ use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use CustomProductImage;
 
 /**
  * Admin controller for product attachments (in /product/form page).

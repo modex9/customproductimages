@@ -1,5 +1,7 @@
 <?php
 
+namespace CustomProductImages\Entity\ObjectModel;
+
 class CustomProductImage extends ObjectModelExt
 {
     public $id;

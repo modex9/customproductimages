@@ -4,12 +4,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-spl_autoload_register(function ($class_name) {
-    $filePath = dirname(__FILE__) . '/ObjectModel/' . $class_name . '.php';
-    if(file_exists($filePath))
-        include $filePath;
-});
-
 $autoloadPath = dirname(__FILE__) . '/vendor/autoload.php';
 if (file_exists($autoloadPath)) {
     require_once $autoloadPath;

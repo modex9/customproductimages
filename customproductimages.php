@@ -3,6 +3,7 @@
 require_once dirname(__FILE__) . '/classes/AbstractModule.php';
 
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
+use CustomProductImages\Entity\ObjectModel\CustomProductImage;
 
 class CustomProductImages extends AbstractModule
 {

@@ -13,7 +13,6 @@ class CustomProductImages extends AbstractModule
     ];
 
     protected $hooks = [
-        'displayHeader',
         'displayFooterProduct',
         'displayAdminProductsExtra',
         'actionAdminControllerSetMedia'
@@ -37,11 +36,6 @@ class CustomProductImages extends AbstractModule
         $this->displayName = $this->l('Custom Product Images');
         $this->description = $this->l('Allows assigning custom images to a product.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
-    }
-
-    public function hookDisplayHeader($params)
-    {
-        return '';
     }
 
     public function hookDisplayFooterProduct($params)

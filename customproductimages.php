@@ -47,12 +47,28 @@ class CustomProductImages extends AbstractModule
 
     public function hookDisplayFooterProduct($params)
     {
-        return 'Product footer';
+        $id_product = $params['product']['id_product'] ?? 0;
+        if(!$id_product)
+            return;
+
+        $customProductImageLinks = $this->getProductCustomImagesLinks($id_product);
+        if(empty($customProductImageLinks))
+            return;
+
+        $this->context->smarty->assign('customProductImageLinks', $customProductImageLinks);
+        return $this->display(__FILE__, 'views/templates/hook/displayFooterProduct.tpl');
     }
 
     public function hookDisplayAdminProductsExtra($params) {
         $id_product = (int) $params['id_product'];
+        
+        $customProductImageLinks = $this->getProductCustomImagesLinks($id_product);
+        
+        $this->context->smarty->assign('customProductImageLinks', $customProductImageLinks);
+        return $this->display(__FILE__, 'views/templates/hook/displayAdminProductsExtra.tpl');
+    }
 
+    private function getProductCustomImagesLinks($id_product) {
         $customProductImages = CustomProductImage::queryObjects(['id_product' => $id_product], $this->context->shop->id);
 
         $customProductImageLinks = [];
@@ -60,10 +76,8 @@ class CustomProductImages extends AbstractModule
         {
             $customProductImageLinks[$customProductImage->id] = $this->context->link->getMediaLink(_MODULE_DIR_. $this->name . '/images/'.$customProductImage->name);
         }
-        
-        $this->context->smarty->assign('customProductImageLinks', $customProductImageLinks);
 
-        return $this->display(__FILE__, 'views/templates/hook/displayAdminProductsExtra.tpl');
+        return $customProductImageLinks;
     }
 
 

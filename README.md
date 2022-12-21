@@ -6,7 +6,6 @@
 Follow the steps of standard module installation procedure: [Module installation](https://addons.prestashop.com/en/content/13-installing-modules)
 
 ### Description
-
 This module allows assigning custom images to products. These images could be used as customer images of a product or simplly images that you want to separate from the main ones.
 
 To assign an image go to admin panel and to product edit page. Select `Modules` tab:

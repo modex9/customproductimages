@@ -1,0 +1,9 @@
+.product-custom-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.custom-image {
+    margin: 0 0.8125rem;
+}

@@ -1,15 +1,9 @@
 <?php
 
-if (!defined('_PS_VERSION_')) {
-    exit;
-}
+namespace CustomProductImages\Module;
 
-$autoloadPath = dirname(__FILE__) . '/vendor/autoload.php';
-if (file_exists($autoloadPath)) {
-    require_once $autoloadPath;
-}
-
-require_once "DbManager.php";
+use CustomProductImages\Helper\DbManager;
+use Module, Tab, Language, Validate;
 
 class AbstractModule extends Module
 {
@@ -120,7 +114,7 @@ class AbstractModule extends Module
      */
     public function uninstall()
     {
-        $db = new DbManager($this->tables);
+        $db = new DbManager($this->tables, $this);
 
         $res = true;
         $res &= $db->deleteTables();
@@ -134,7 +128,7 @@ class AbstractModule extends Module
      */
     public function createDbTables()
     {
-        $db = new DbManager($this->tables);
+        $db = new DbManager($this->tables, $this);
         $result = $db->createTables();
         return $result;
     }

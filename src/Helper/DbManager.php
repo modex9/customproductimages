@@ -1,12 +1,19 @@
 <?php
 
+namespace CustomProductImages\Helper;
+
+use DB, Exception;
+
 class DbManager
 {
     private $tables;
 
-    public function __construct($tables)
+    private $module;
+
+    public function __construct($tables, $module)
     {
         $this->tables = $tables;
+        $this->module = $module;
     }
 
     /**
@@ -18,7 +25,7 @@ class DbManager
         {
             return true;
         }
-        $sql_path = dirname(__FILE__) . '/../sql/';
+        $sql_path = _PS_ROOT_DIR_ . '/' . _MODULE_DIR_ . $this->module->name . '/sql/';
         $sql_files = scandir($sql_path);
         $sql_queries = [];
         foreach($sql_files as $sql_file)

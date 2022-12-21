@@ -101,4 +101,22 @@ $(function () {
             </div>
         `);
     }
+
+    function addOverlay() {
+        removeOverlay();
+        $('body').append(`
+            <div id="cpi-loading-overlay">
+                <div class="lds-ellipsis">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>`
+        );
+    }
+    
+    function removeOverlay() {
+        $('#cpi-loading-overlay').remove();
+    }
 });

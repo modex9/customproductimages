@@ -1,9 +1,17 @@
 <?php
 
-require_once dirname(__FILE__) . '/classes/AbstractModule.php';
+if (!defined('_PS_VERSION_')) {
+    exit;
+}
+
+$autoloadPath = dirname(__FILE__) . '/vendor/autoload.php';
+if (file_exists($autoloadPath)) {
+    require_once $autoloadPath;
+}
 
 use PrestaShop\PrestaShop\Adapter\SymfonyContainer;
 use CustomProductImages\Entity\ObjectModel\CustomProductImage;
+use CustomProductImages\Module\AbstractModule;
 
 class CustomProductImages extends AbstractModule
 {
@@ -13,6 +21,7 @@ class CustomProductImages extends AbstractModule
     ];
 
     protected $hooks = [
+        'displayHeader',
         'displayFooterProduct',
         'displayAdminProductsExtra',
         'actionAdminControllerSetMedia'
@@ -36,6 +45,13 @@ class CustomProductImages extends AbstractModule
         $this->displayName = $this->l('Custom Product Images');
         $this->description = $this->l('Allows assigning custom images to a product.');
         $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
+    }
+
+    public function hookDisplayHeader($params)
+    {
+        if($this->context->controller->php_self != 'product')
+            return;
+        $this->context->controller->addCSS($this->_path . 'views/css/cpi.css');
     }
 
     public function hookDisplayFooterProduct($params)
@@ -87,6 +103,7 @@ class CustomProductImages extends AbstractModule
                 ]
                 );
                 $this->context->controller->addJS($this->_path . 'views/js/cpi-admin.js');
+                $this->context->controller->addCSS($this->_path . 'views/css/cpi-admin.css');
             }
         }
     }
